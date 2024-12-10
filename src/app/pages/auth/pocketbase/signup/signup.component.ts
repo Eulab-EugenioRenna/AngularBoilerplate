@@ -6,9 +6,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { SupabaseService } from '../../../services/supabase.service';
-import { LogService } from '../../../services/log.service';
+import { LogService } from '../../../../services/log.service';
 import { CommonModule } from '@angular/common';
+import { PocketbaseService } from '../../../../services/pocketbase.service';
 
 @Component({
   selector: 'app-signup',
@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
 })
 export class SignupComponent {
   constructor(
-    private supabase: SupabaseService,
+    private pocketbase: PocketbaseService,
     private router: Router,
     private log: LogService
   ) {}
@@ -38,20 +38,19 @@ export class SignupComponent {
     ]),
   });
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     try {
       this.loading = true;
       const email = this.signUpForm.value.email as string;
       const password = this.signUpForm.value.password as string;
       if (email === '' || password === '') throw new Error('Input Blank');
-      this.supabase.register(email, password).then(({ error }) => {
-        if (error) throw error;
-        this.router.navigate(['/']);
-        this.loading = false;
-      });
+      const authData = await this.pocketbase.register(email, password);
+      this.log.log('Signup Success', authData);
+      this.router.navigate(['/login']);
+      this.signUpForm.reset();
+      this.loading = false;
     } catch (error) {
       this.log.error('Signup Error', error as Error);
-      this.loading = false;
     }
   }
 }

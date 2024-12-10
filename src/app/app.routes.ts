@@ -1,16 +1,23 @@
 import { Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './guard/auth.guard';
-import { SignupComponent } from './pages/auth/signup/signup.component';
-import { LoginComponent } from './pages/auth/login/login.component';
-import { UserComponent } from './pages/auth/user/user.component';
 import { ErrorComponent } from './pages/error/error.component';
+import { SignupComponent } from './pages/auth/pocketbase/signup/signup.component';
+import { LoginComponent } from './pages/auth/pocketbase/login/login.component';
+import { UserComponent } from './pages/auth/pocketbase/user/user.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: AppComponent,
     canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'profile/:id',
+        component: UserComponent,
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: 'login',
@@ -19,12 +26,6 @@ export const routes: Routes = [
   {
     path: 'signup',
     component: SignupComponent,
-  },
-  {
-    path: 'profile/:id',
-    component: UserComponent,
-    canActivate: [AuthGuard],
-    pathMatch: 'full',
   },
   {
     path: 'error',

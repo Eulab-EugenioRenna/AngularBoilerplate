@@ -54,4 +54,8 @@ export class SupabaseService {
   signOut() {
     return this.supabase.auth.signOut();
   }
+
+  verifyOTP(email: string, token: string) {
+    return this.supabase.auth.verifyOtp({ email, token, type: 'email' });
+  }
 }

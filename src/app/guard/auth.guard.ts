@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     console.log('AuthGuard#canActivate called', route, state);
     if (this.supabase.session) return true;
-    this.router.navigate(['/signup']);
+    this.router.navigate(['/login']);
     this.supabase.signOut();
     return false;
   }
