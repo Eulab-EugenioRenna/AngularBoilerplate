@@ -1,26 +1,12 @@
-import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
-import { SupabaseService } from '../services/supabase.service';
-import { Injectable } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { PocketbaseService } from '../services/pocketbase.service';
+import { inject } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthGuard implements CanActivate {
-  constructor(
-    private readonly supabase: SupabaseService,
-    private router: Router
-  ) {}
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    console.log('AuthGuard#canActivate called', route, state);
-    if (this.supabase.session) return true;
-    this.router.navigate(['/login']);
-    this.supabase.signOut();
-    return false;
-  }
-}
+export const authGuard: CanActivateFn = () => {
+  const pocketbase = inject(PocketbaseService);
+  const router = inject(Router);
+  if (pocketbase.user) return true;
+  router.navigate(['/login']);
+  pocketbase.signOut();
+  return false;
+};

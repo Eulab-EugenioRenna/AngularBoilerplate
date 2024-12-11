@@ -6,11 +6,8 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class PocketbaseService {
-  pb: PocketBase;
+  pb = new PocketBase(environment.pocketbaseUrl);
   AUTH_COLLECTION = 'users';
-  constructor() {
-    this.pb = new PocketBase(environment.pocketbaseUrl);
-  }
 
   get user() {
     return this.pb.authStore.record?.id;
@@ -21,9 +18,12 @@ export class PocketbaseService {
   }
 
   async register(email: string, password: string) {
-    return await this.pb
-      .collection(this.AUTH_COLLECTION)
-      .create({ email, password });
+    return await this.pb.collection(this.AUTH_COLLECTION).create({
+      email,
+      password,
+      passwordConfirm: password,
+      username: email.split('@')[0],
+    });
   }
 
   signOut() {
@@ -42,5 +42,9 @@ export class PocketbaseService {
 
   async signInOTP(email: string) {
     return await this.pb.collection(this.AUTH_COLLECTION).requestOTP(email);
+  }
+
+  async getUserById(id: string) {
+    return await this.pb.collection(this.AUTH_COLLECTION).getOne(id);
   }
 }

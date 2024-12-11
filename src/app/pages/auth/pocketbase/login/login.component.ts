@@ -50,7 +50,7 @@ export class LoginComponent {
       const email = this.signInForm.value.email as string;
       const password = this.signInForm.value.password as string;
       const authData = await this.pocketbase.signInPassword(email, password);
-      this.router.navigate(['/profile/' + authData.record.id]);
+      this.router.navigate(['/profile/' + authData.record['id']]);
       this.loading = false;
     } catch (error) {
       this.log.error('Sign In Password Error', error as Error);
