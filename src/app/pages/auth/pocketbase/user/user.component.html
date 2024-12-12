@@ -1,10 +1,10 @@
 <div class="flex justify-center items-center h-screen">
   <div class="w-[400px] bg-white rounded-lg p-6 shadow-lg flex flex-col items-center h-max">
-    <img [src]="user().avatar" alt="Profile avatar" class="w-[120px] h-[120px] object-cover rounded-full mb-4" />
+    <img [src]="user.avatar" alt="Profile avatar" class="w-[120px] h-[120px] object-cover rounded-full mb-4" />
     <div class="flex flex-col items-start">
-      <p class="text-lg"><strong>User Id: </strong>{{user().id}}
-      <p class="text-lg"><strong>Email: </strong>{{user().email}}</p>
-      @if(user().verified){
+      <p class="text-lg"><strong>User Id: </strong>{{user.id}}
+      <p class="text-lg"><strong>Email: </strong>{{user.email}}</p>
+      @if(user.verified){
       <p><strong>Verified: </strong><i class="fa fa-check-circle text-green-500" aria-hidden="true"></i></p>
       }@else {
       <p><strong>Verified: </strong><i class="fa fa-times-circle text-red-500" aria-hidden="true"></i>
@@ -14,9 +14,9 @@
 
       </p>
       }
-      <p class="text-lg"><strong>User: </strong>{{user().username}}</p>
-      <p class="text-lg"><strong>Created at: </strong>{{user().created | date:'medium'}}</p>
-      <p class="text-lg"><strong>Updated at: </strong>{{user().updated | date:'medium' }}</p>
+      <p class="text-lg"><strong>User: </strong>{{user.username}}</p>
+      <p class="text-lg"><strong>Created at: </strong>{{user.created | date:'medium'}}</p>
+      <p class="text-lg"><strong>Updated at: </strong>{{user.updated | date:'medium' }}</p>
     </div>
   </div>
 </div>

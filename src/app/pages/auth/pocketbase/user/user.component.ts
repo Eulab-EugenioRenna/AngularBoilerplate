@@ -1,8 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { PocketbaseService } from '../../../../services/pocketbase.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ProfileService } from '../../../../services/profile.service';
+import { LogService } from '../../../../services/log.service';
 
 @Component({
   selector: 'app-user',
@@ -13,12 +13,12 @@ import { ProfileService } from '../../../../services/profile.service';
 })
 export class UserComponent {
   id!: string;
-  user = signal(this.getCurrentUser());
+  user = this.getCurrentUser();
 
   constructor(
     private readonly pocketbase: PocketbaseService,
     private activatedRoute: ActivatedRoute,
-    private imageUtil: ProfileService
+    private log: LogService
   ) {
     this.activatedRoute.params.subscribe((params) => {
       this.id = params['id'];
@@ -43,14 +43,18 @@ export class UserComponent {
     return currentUser;
   }
 
-  async getAvatar() {
-    const res = await this.pocketbase.getAvatarImage();
-    console.log('avatar:', res);
-    return res;
+  getAvatar() {
+    try {
+      const res = this.pocketbase.getAvatarImage();
+      return res;
+    } catch (error) {
+      this.log.error('Error getting avatar:', error as Error);
+      return 'https://placehold.co/120X120';
+    }
   }
 
   requestVerify() {
-    this.pocketbase.requestVerification(this.user().email);
+    this.pocketbase.requestVerification(this.user.email);
   }
 
   verifyEmail() {
