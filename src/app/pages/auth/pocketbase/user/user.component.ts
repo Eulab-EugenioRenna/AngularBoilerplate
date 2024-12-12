@@ -1,35 +1,36 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { PocketbaseService } from '../../../../services/pocketbase.service';
 import { ActivatedRoute } from '@angular/router';
-import { Profile } from '../../../../models/profile';
+import { CommonModule } from '@angular/common';
+import { ProfileService } from '../../../../services/profile.service';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss',
 })
 export class UserComponent {
   id!: string;
-  user!: Profile;
+  user = signal(this.getCurrentUser());
 
   constructor(
     private readonly pocketbase: PocketbaseService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private imageUtil: ProfileService
   ) {
     this.activatedRoute.params.subscribe((params) => {
       this.id = params['id'];
-      this.getCurrentUser();
     });
   }
 
   getCurrentUser() {
-    this.user = {
-      collectionId: this.pocketbase.session?.['collectionId'] ?? '',
+    const avatar = this.getAvatar();
+    const currentUser = {
       collectionName: this.pocketbase.session?.['collectionName'] ?? '',
       verified: this.pocketbase.session?.['verified'] ?? false,
-      avatar: this.pocketbase.session?.['avatar'] ?? '',
+      avatar: avatar ?? '',
       created: this.pocketbase.session?.['created'] ?? new Date(),
       email: this.pocketbase.session?.['email'] ?? '',
       emailVisibility: this.pocketbase.session?.['emailVisibility'] ?? false,
@@ -38,5 +39,21 @@ export class UserComponent {
       updated: this.pocketbase.session?.['updated'] ?? new Date(),
       username: this.pocketbase.session?.['username'] ?? '',
     };
+
+    return currentUser;
+  }
+
+  async getAvatar() {
+    const res = await this.pocketbase.getAvatarImage();
+    console.log('avatar:', res);
+    return res;
+  }
+
+  requestVerify() {
+    this.pocketbase.requestVerification(this.user().email);
+  }
+
+  verifyEmail() {
+    this.pocketbase.verifyEmail(this.id);
   }
 }

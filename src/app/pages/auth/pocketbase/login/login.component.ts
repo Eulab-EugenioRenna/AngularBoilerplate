@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -11,8 +11,9 @@ import { CommonModule } from '@angular/common';
 import { LogService } from '../../../../services/log.service';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
-import { InputOtpModule } from 'primeng/inputotp';
+
 import { PocketbaseService } from '../../../../services/pocketbase.service';
+import { OtpComponent } from '../../../../shared/components/otp/otp.component';
 
 @Component({
   selector: 'app-login',
@@ -23,33 +24,38 @@ import { PocketbaseService } from '../../../../services/pocketbase.service';
     CommonModule,
     ButtonModule,
     RippleModule,
-    InputOtpModule,
     FormsModule,
+    OtpComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class LoginComponent {
   signInForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', Validators.required),
   });
-  otpValue!: string;
+
   showOTP = false;
   pocketbaseOptId!: string;
+  loading = this.signInForm.invalid;
 
   constructor(
     private readonly pocketbase: PocketbaseService,
     private log: LogService,
     private router: Router
   ) {}
-  loading = this.signInForm.invalid;
+
   async onSubmitEmailPassword(): Promise<void> {
     try {
       this.loading = true;
       const email = this.signInForm.value.email as string;
       const password = this.signInForm.value.password as string;
       const authData = await this.pocketbase.signInPassword(email, password);
+      if (authData.record['id']) {
+        this.log.log('Sign In Success', authData.record['username']);
+      }
       this.router.navigate(['/profile/' + authData.record['id']]);
       this.loading = false;
     } catch (error) {
@@ -57,6 +63,7 @@ export class LoginComponent {
       this.loading = false;
     }
   }
+
   async onSubmitOTP(): Promise<void> {
     this.showOTP = true;
     this.loading = true;
@@ -70,15 +77,17 @@ export class LoginComponent {
       this.log.error('Sign In OTP Error', error as Error);
     }
   }
-  async verifyOTP(): Promise<void> {
+  async verifyOTP(optValue: string): Promise<void> {
     try {
       const authData = await this.pocketbase.verifyOTP(
         this.pocketbaseOptId,
-        this.otpValue
+        optValue
       );
-      this.otpValue = '';
+      if (authData.record['id']) {
+        this.log.log('Sign In Success', authData.record['username']);
+      }
       this.signInForm.reset();
-      this.router.navigate(['/profile' + authData.record.id]);
+      this.router.navigate(['/profile' + authData.record['id']]);
     } catch (error) {
       this.log.error('Verify OTP Error', error as Error);
     } finally {
@@ -87,7 +96,7 @@ export class LoginComponent {
     }
   }
 
-  async resendOTP() {
+  async resendOTP(): Promise<void> {
     try {
       const email = this.signInForm.value.email as string;
       const authData = await this.pocketbase.signInOTP(email);

@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import PocketBase from 'pocketbase';
 import { environment } from '../../environments/environment';
+import { ProfileService } from './profile.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PocketbaseService {
+  constructor(private imageUtils: ProfileService) {}
+
   pb = new PocketBase(environment.pocketbaseUrl);
   AUTH_COLLECTION = 'users';
 
@@ -18,11 +21,23 @@ export class PocketbaseService {
   }
 
   async register(email: string, password: string) {
+    const username = email.split('@');
+
+    const avatar = await new Promise<File>((resolve) => {
+      this.imageUtils
+        .getAvatarImage(username[0], username[1])
+        .subscribe((blob) => {
+          const file = this.imageUtils.blobToFile(blob, 'avatar.png');
+          resolve(file);
+        });
+    });
+
     return await this.pb.collection(this.AUTH_COLLECTION).create({
       email,
       password,
       passwordConfirm: password,
-      username: email.split('@')[0],
+      username: username[0],
+      avatar: avatar,
     });
   }
 
@@ -46,5 +61,24 @@ export class PocketbaseService {
 
   async getUserById(id: string) {
     return await this.pb.collection(this.AUTH_COLLECTION).getOne(id);
+  }
+
+  async requestVerification(email: string) {
+    return await this.pb
+      .collection(this.AUTH_COLLECTION)
+      .requestVerification(email);
+  }
+
+  getAvatarImage() {
+    return this.pb.files.getURL(
+      { ...this.pb.authStore.record },
+      this.pb.authStore.record?.['avatar']
+    );
+  }
+
+  async verifyEmail(verificationId: string) {
+    return await this.pb
+      .collection(this.AUTH_COLLECTION)
+      .confirmVerification(verificationId);
   }
 }
