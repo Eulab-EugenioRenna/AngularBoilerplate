@@ -60,4 +60,9 @@ export class UserComponent {
   verifyEmail() {
     this.pocketbase.verifyEmail(this.id);
   }
+
+  logOut() {
+    this.pocketbase.signOut();
+    
+  }
 }

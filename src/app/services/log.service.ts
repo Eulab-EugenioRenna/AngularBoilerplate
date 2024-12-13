@@ -7,12 +7,12 @@ import { MessageService } from 'primeng/api';
 export class LogService {
   constructor(private messageService: MessageService) {}
 
-  log(message: string, optionalParams?: unknown) {
-    console.log(message, optionalParams);
+  log(message: string) {
+    console.log(message);
     this.messageService.add({
       severity: 'success',
       summary: 'Success',
-      detail: message + ' : ' + optionalParams,
+      detail: message,
     });
   }
 
@@ -25,12 +25,12 @@ export class LogService {
     });
   }
 
-  warn(message: string, optionalParams?: Error) {
-    console.warn(message, optionalParams);
+  warn(message: string) {
+    console.warn(message);
     this.messageService.add({
-      severity: 'warning',
+      severity: 'warn',
       summary: 'Warning',
-      detail: message + ' : ' + optionalParams?.message,
+      detail: message,
     });
   }
 }

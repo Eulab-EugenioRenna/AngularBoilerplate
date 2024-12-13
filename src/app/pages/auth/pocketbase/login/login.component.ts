@@ -54,7 +54,7 @@ export class LoginComponent {
       const password = this.signInForm.value.password as string;
       const authData = await this.pocketbase.signInPassword(email, password);
       if (authData.record['id']) {
-        this.log.log('Sign In Success', authData.record['username']);
+        this.log.log('Sign In Success, ' + authData.record['username']);
       }
       this.router.navigate(['/profile/' + authData.record['id']]);
       this.loading = false;
@@ -84,7 +84,7 @@ export class LoginComponent {
         optValue
       );
       if (authData.record['id']) {
-        this.log.log('Sign In Success', authData.record['username']);
+        this.log.log('Sign In Success, '+ authData.record['username']);
       }
       this.signInForm.reset();
       this.router.navigate(['/profile/' + authData.record.id]);

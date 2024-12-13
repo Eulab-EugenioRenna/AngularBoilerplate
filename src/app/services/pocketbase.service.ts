@@ -60,7 +60,8 @@ export class PocketbaseService {
   }
 
   async getUserById(id: string) {
-    return await this.pb.collection(this.AUTH_COLLECTION).getOne(id);
+    const user = await this.pb.collection(this.AUTH_COLLECTION).getOne(id);
+    return user;
   }
 
   async requestVerification(email: string) {

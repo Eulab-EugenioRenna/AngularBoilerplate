@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const isValid = this.pocketbase.getValidatedUser();
     this.checkValidLogin(isValid);
     if (!isValid) {
-      this.logService.log('Token not valid, redirecting to login');
+      this.logService.warn('Token not valid, redirecting to login');
       this.router.navigate(['/login']);
     }
   }

@@ -5,19 +5,22 @@ import { SignupComponent } from './pages/auth/pocketbase/signup/signup.component
 import { LoginComponent } from './pages/auth/pocketbase/login/login.component';
 import { UserComponent } from './pages/auth/pocketbase/user/user.component';
 import { authGuard } from './guard/auth.guard';
+import { profileResolver } from './resolver/profile.resolver';
 
 export const routes: Routes = [
   {
     path: '',
     component: AppComponent,
     canActivate: [authGuard],
-    children: [
-      {
-        path: 'profile/:id',
-        component: UserComponent,
-        pathMatch: 'full',
-      },
-    ],
+  },
+  {
+    path: 'profile/:id',
+    component: UserComponent,
+    pathMatch: 'full',
+    canActivate: [authGuard],
+    resolve: {
+      profile: profileResolver,
+    },
   },
   {
     path: 'login',

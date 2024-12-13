@@ -45,7 +45,7 @@ export class SignupComponent {
       const password = this.signUpForm.value.password as string;
       if (email === '' || password === '') throw new Error('Input Blank');
       const authData = await this.pocketbase.register(email, password);
-      this.log.log('Signup Success', authData['username']);
+      this.log.log('Signup Success,' +  authData['username']);
       this.router.navigate(['/login']);
       this.signUpForm.reset();
       this.loading = false;
