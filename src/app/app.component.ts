@@ -5,11 +5,12 @@ import { SupabaseService } from './services/supabase.service';
 import { LogService } from './services/log.service';
 import { PocketbaseService } from './services/pocketbase.service';
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
+import { FooterComponent } from "./shared/components/footer/footer.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToastModule],
+  imports: [RouterOutlet, ToastModule, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   providers: [LogService],

@@ -1,5 +1,7 @@
-<div class="w-dvw h-dvh bg-slate-800">
+<div class="h-screen w-screen flex flex-col bg-slate-800">
+  <div class="h-[calc(100%-90px)]">
+    <router-outlet></router-outlet>
+  </div>
+  <app-footer class="absolute bottom-0 w-screen"></app-footer>
   <p-toast position="bottom-right"></p-toast>
-
-  <router-outlet></router-outlet>
 </div>

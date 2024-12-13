@@ -10,7 +10,7 @@ export const profileResolver: ResolveFn<boolean> = async (route) => {
   const idRoute = route.params['id'];
   try {
     const user = await pocketbase.getUserById(idRoute);
-    log.log('Retrieve User:,' + user['username']);
+    log.log('Retrieve User: ' + user['username']);
     return true;
   } catch (error) {
     log.error('Error getting user:', error as Error);

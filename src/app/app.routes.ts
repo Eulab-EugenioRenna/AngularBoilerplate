@@ -1,16 +1,16 @@
 import { Routes } from '@angular/router';
-import { AppComponent } from './app.component';
 import { ErrorComponent } from './pages/error/error.component';
 import { SignupComponent } from './pages/auth/pocketbase/signup/signup.component';
 import { LoginComponent } from './pages/auth/pocketbase/login/login.component';
 import { UserComponent } from './pages/auth/pocketbase/user/user.component';
 import { authGuard } from './guard/auth.guard';
 import { profileResolver } from './resolver/profile.resolver';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: AppComponent,
+    component: DashboardComponent,
     canActivate: [authGuard],
   },
   {
