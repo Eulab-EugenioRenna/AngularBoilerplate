@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import PocketBase from 'pocketbase';
+import PocketBase, { OnStoreChangeFunc } from 'pocketbase';
 import { environment } from '../../environments/environment';
 import { ProfileService } from './profile.service';
 
@@ -74,6 +74,14 @@ export class PocketbaseService {
       { ...this.pb.authStore.record },
       this.pb.authStore.record?.['avatar']
     );
+  }
+
+  getValidatedUser() {
+    return this.pb.authStore.isValid;
+  }
+
+  authChanges(callback: OnStoreChangeFunc) {
+    return this.pb.authStore.onChange(callback);
   }
 
   async verifyEmail(verificationId: string) {

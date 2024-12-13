@@ -5,7 +5,7 @@ import { inject } from '@angular/core';
 export const authGuard: CanActivateFn = () => {
   const pocketbase = inject(PocketbaseService);
   const router = inject(Router);
-  if (pocketbase.user) return true;
+  if (pocketbase.getValidatedUser()) return true;
   router.navigate(['/login']);
   pocketbase.signOut();
   return false;

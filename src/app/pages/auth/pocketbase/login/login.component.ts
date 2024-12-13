@@ -87,7 +87,7 @@ export class LoginComponent {
         this.log.log('Sign In Success', authData.record['username']);
       }
       this.signInForm.reset();
-      this.router.navigate(['/profile' + authData.record['id']]);
+      this.router.navigate(['/profile/' + authData.record.id]);
     } catch (error) {
       this.log.error('Verify OTP Error', error as Error);
     } finally {
