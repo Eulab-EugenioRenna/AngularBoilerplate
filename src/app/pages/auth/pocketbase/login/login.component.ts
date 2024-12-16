@@ -8,12 +8,11 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LogService } from '../../../../services/log.service';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
-
-import { PocketbaseService } from '../../../../services/pocketbase.service';
 import { OtpComponent } from '../../../../shared/components/otp/otp.component';
+import { PocketbaseService } from '../../../../shared/services/pocketbase.service';
+import { LogService } from '../../../../shared/services/log.service';
 
 @Component({
   selector: 'app-login',
@@ -34,7 +33,14 @@ import { OtpComponent } from '../../../../shared/components/otp/otp.component';
 export class LoginComponent {
   signInForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', Validators.required),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.maxLength(32),
+      Validators.pattern(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z\d!@#$%^&*(),.?":{}|<>]{8,32}$/
+      ),
+    ]),
   });
 
   showOTP = false;
@@ -56,7 +62,7 @@ export class LoginComponent {
       if (authData.record['id']) {
         this.log.log('Sign In Success, ' + authData.record['username']);
       }
-      this.router.navigate(['/profile/' + authData.record['id']]);
+      this.router.navigate(['/']);
       this.loading = false;
     } catch (error) {
       this.log.error('Sign In Password Error', error as Error);
@@ -84,10 +90,10 @@ export class LoginComponent {
         optValue
       );
       if (authData.record['id']) {
-        this.log.log('Sign In Success, '+ authData.record['username']);
+        this.log.log('Sign In Success, ' + authData.record['username']);
       }
       this.signInForm.reset();
-      this.router.navigate(['/profile/' + authData.record.id]);
+      this.router.navigate(['/']);
     } catch (error) {
       this.log.error('Verify OTP Error', error as Error);
     } finally {
@@ -106,5 +112,10 @@ export class LoginComponent {
     } catch (error) {
       this.log.error('Sign In OTP Error', error as Error);
     }
+  }
+
+  closeOTP() {
+    this.showOTP = false;
+    this.pocketbase.cancelAllRequests();
   }
 }

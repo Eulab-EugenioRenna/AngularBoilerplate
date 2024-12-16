@@ -8,14 +8,17 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideServiceWorker } from '@angular/service-worker';
-import { MessageService } from 'primeng/api';
 import {
   provideHttpClient,
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { interceptValidStateInterceptor } from './interceptors/intercept-valid-state.interceptor';
+import { interceptValidStateInterceptor } from './shared/interceptors/intercept-valid-state.interceptor';
+import { MessageService } from 'primeng/api';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { providePrimeNG } from 'primeng/config';
+import Aura from '@primeng/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,5 +34,12 @@ export const appConfig: ApplicationConfig = {
     ),
     importProvidersFrom([BrowserAnimationsModule]),
     MessageService,
+    provideAnimationsAsync(),
+    providePrimeNG({
+      ripple: true,
+      theme: {
+        preset: Aura,
+      },
+    }),
   ],
 };

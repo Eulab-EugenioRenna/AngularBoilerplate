@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { PocketbaseService } from '../../../../services/pocketbase.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LogService } from '../../../../services/log.service';
+import { LogService } from '../../../../shared/services/log.service';
+import { PocketbaseService } from '../../../../shared/services/pocketbase.service';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ButtonModule],
   templateUrl: './user.component.html',
   styleUrl: './user.component.scss',
 })
@@ -18,6 +19,7 @@ export class UserComponent {
   constructor(
     private readonly pocketbase: PocketbaseService,
     private activatedRoute: ActivatedRoute,
+    private router: Router,
     private log: LogService
   ) {
     this.activatedRoute.params.subscribe((params) => {
@@ -26,35 +28,17 @@ export class UserComponent {
   }
 
   getCurrentUser() {
-    const avatar = this.getAvatar();
-    const currentUser = {
-      collectionName: this.pocketbase.session?.['collectionName'] ?? '',
-      verified: this.pocketbase.session?.['verified'] ?? false,
-      avatar: avatar ?? '',
-      created: this.pocketbase.session?.['created'] ?? new Date(),
-      email: this.pocketbase.session?.['email'] ?? '',
-      emailVisibility: this.pocketbase.session?.['emailVisibility'] ?? false,
-      id: this.pocketbase.session?.id ?? '',
-      name: this.pocketbase.session?.['name'] ?? '',
-      updated: this.pocketbase.session?.['updated'] ?? new Date(),
-      username: this.pocketbase.session?.['username'] ?? '',
-    };
-
-    return currentUser;
-  }
-
-  getAvatar() {
     try {
-      const res = this.pocketbase.getAvatarImage();
+      const res = this.pocketbase.getCurrentUser();
       return res;
     } catch (error) {
-      this.log.error('Error getting avatar:', error as Error);
-      return 'https://placehold.co/120X120';
+      this.log.error('Error getting user:', error as Error);
+      return null;
     }
   }
 
   requestVerify() {
-    this.pocketbase.requestVerification(this.user.email);
+    this.pocketbase.requestVerification(this.user!['email']);
   }
 
   verifyEmail() {
@@ -63,6 +47,9 @@ export class UserComponent {
 
   logOut() {
     this.pocketbase.signOut();
-    
+  }
+
+  toHome() {
+    this.router.navigate(['/']);
   }
 }

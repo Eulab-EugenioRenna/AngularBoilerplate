@@ -6,14 +6,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { LogService } from '../../../../services/log.service';
 import { CommonModule } from '@angular/common';
-import { PocketbaseService } from '../../../../services/pocketbase.service';
+import { PocketbaseService } from '../../../../shared/services/pocketbase.service';
+import { LogService } from '../../../../shared/services/log.service';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule, ButtonModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
@@ -45,7 +46,7 @@ export class SignupComponent {
       const password = this.signUpForm.value.password as string;
       if (email === '' || password === '') throw new Error('Input Blank');
       const authData = await this.pocketbase.register(email, password);
-      this.log.log('Signup Success,' +  authData['username']);
+      this.log.log('Signup Success,' + authData['username']);
       this.router.navigate(['/login']);
       this.signUpForm.reset();
       this.loading = false;

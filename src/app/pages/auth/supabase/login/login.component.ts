@@ -6,13 +6,13 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SupabaseService } from '../../../../services/supabase.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { LogService } from '../../../../services/log.service';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { InputOtpModule } from 'primeng/inputotp';
+import { SupabaseService } from '../../../../shared/services/supabase.service';
+import { LogService } from '../../../../shared/services/log.service';
 
 @Component({
   selector: 'app-login-supabase',

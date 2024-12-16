@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import PocketBase, { OnStoreChangeFunc } from 'pocketbase';
-import { environment } from '../../environments/environment';
 import { ProfileService } from './profile.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -89,5 +89,28 @@ export class PocketbaseService {
     return await this.pb
       .collection(this.AUTH_COLLECTION)
       .confirmVerification(verificationId);
+  }
+
+  cancelAllRequests() {
+    return this.pb.cancelAllRequests();
+  }
+
+  getCurrentUser() {
+    const avatar = this.getAvatarImage();
+    const currentUser = {
+      collectionId: this.pb.authStore.record?.['collectionId'] ?? '',
+      collectionName: this.pb.authStore.record?.['collectionName'] ?? '',
+      verified: this.pb.authStore.record?.['verified'] ?? false,
+      avatar: avatar ?? '',
+      created: this.pb.authStore.record?.['created'] ?? new Date(),
+      email: this.pb.authStore.record?.['email'] ?? '',
+      emailVisibility: this.pb.authStore.record?.['emailVisibility'] ?? false,
+      id: this.pb.authStore.record?.id ?? '',
+      name: this.pb.authStore.record?.['name'] ?? '',
+      updated: this.pb.authStore.record?.['updated'] ?? new Date(),
+      username: this.pb.authStore.record?.['username'] ?? '',
+    };
+
+    return currentUser;
   }
 }

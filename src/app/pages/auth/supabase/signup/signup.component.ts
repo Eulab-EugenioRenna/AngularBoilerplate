@@ -6,9 +6,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { SupabaseService } from '../../../../services/supabase.service';
-import { LogService } from '../../../../services/log.service';
+
 import { CommonModule } from '@angular/common';
+import { SupabaseService } from '../../../../shared/services/supabase.service';
+import { LogService } from '../../../../shared/services/log.service';
 
 @Component({
   selector: 'app-signup-supabase',

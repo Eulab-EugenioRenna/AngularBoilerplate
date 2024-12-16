@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
-import { SupabaseService } from './services/supabase.service';
-import { LogService } from './services/log.service';
-import { PocketbaseService } from './services/pocketbase.service';
 import { BehaviorSubject, interval, Subscription } from 'rxjs';
-import { FooterComponent } from "./shared/components/footer/footer.component";
+import { FooterComponent } from './shared/components/footer/footer.component';
+import { SupabaseService } from './shared/services/supabase.service';
+import { LogService } from './shared/services/log.service';
+import { PocketbaseService } from './shared/services/pocketbase.service';
 
 @Component({
   selector: 'app-root',
